@@ -39,6 +39,8 @@ Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspie
 ├─ main.py
 ├─ team.xlsx
 ├─ .env                 # plik lokalny z danymi logowania
+├─ .env.example         # przykładowy szablon konfiguracji
+├─ .gitignore           # pliki i katalogi ignorowane przez Git
 └─ zp_updater/
    ├─ __init__.py
    ├─ config.py
