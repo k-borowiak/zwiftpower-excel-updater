@@ -12,13 +12,33 @@ Skrypt loguje się przez Zwift SSO, pobiera dane ze strony profilu i zapisuje wy
 
 ---
 
+## Cel projektu
+
+Projekt został stworzony w celu **automatyzacji procesu zbierania i aktualizacji danych zawodników** z serwisu ZwiftPower, tak aby **ułatwić zarządzanie teamem kapitanom oraz osobom odpowiedzialnym za organizację składu**.
+
+W praktyce zarządzanie zespołem często wymaga regularnego sprawdzania parametrów zawodników, takich jak masa ciała, zFTP czy wartości mocy na różnych odcinkach czasu. Ręczne wchodzenie na każdy profil osobno, kopiowanie danych i przenoszenie ich do Excela jest czasochłonne, powtarzalne i podatne na błędy.
+
+Ten skrypt rozwiązuje ten problem poprzez:
+
+- **automatyczne pobieranie danych wszystkich członków teamu**
+- **zebranie ich w jednym, uporządkowanym pliku Excel**
+- **ułatwienie aktualizacji danych bez ręcznego przepisywania**
+- **przyspieszenie pracy kapitanów i managerów zespołu**
+- **uproszczenie analizy oraz porównywania zawodników**
+
+Dzięki temu zamiast ręcznie sprawdzać profile jednego po drugim, można w prosty sposób przygotować aktualny arkusz z najważniejszymi danymi całego zespołu. Pozwala to na **łatwiejsze zarządzanie teamem, szybsze podejmowanie decyzji oraz utrzymywanie wszystkich kluczowych informacji w jednym miejscu**.
+
+Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspierające codzienną organizację pracy wokół teamu — szczególnie tam, gdzie liczy się szybki dostęp do aktualnych danych zawodników.
+
+---
+
 ## Struktura projektu
 
-```
+```text
 .
 ├─ main.py
 ├─ team.xlsx
-├─ .env                 # plik lokalny z danymi logowania 
+├─ .env                 # plik lokalny z danymi logowania
 └─ zp_updater/
    ├─ __init__.py
    ├─ config.py
@@ -39,14 +59,14 @@ Skrypt loguje się przez Zwift SSO, pobiera dane ze strony profilu i zapisuje wy
 
 ## Instalacja
 
-1) Sklonuj repozytorium i przejdź do katalogu projektu:
+### 1) Sklonuj repozytorium i przejdź do katalogu projektu
 
 ```bash
 git clone https://github.com/<twoj-login>/zwiftpower-excel-updater.git
 cd zwiftpower-excel-updater
 ```
 
-2) (Zalecane) Utwórz środowisko wirtualne:
+### 2) (Zalecane) Utwórz środowisko wirtualne
 
 ```bash
 python -m venv .venv
@@ -64,7 +84,7 @@ Aktywacja:
 source .venv/bin/activate
 ```
 
-3) Zainstaluj zależności:
+### 3) Zainstaluj zależności
 
 ```bash
 pip install -r requirements.txt
@@ -80,7 +100,7 @@ Skrypt pobiera dane logowania z pliku `.env`, aby nie trzymać sekretów w kodzi
 
 Plik `.env` musi znajdować się w **głównym katalogu projektu**, obok `main.py`:
 
-```
+```text
 .
 ├─ main.py
 ├─ team.xlsx
@@ -105,8 +125,8 @@ ZP_PASSWORD="hasło ze spacją"
 
 ### Bezpieczeństwo
 
-- **Nie commituj `.env` do repozytorium.**
-- Upewnij się, że `.env` jest wpisany w `.gitignore`.
+- **Nie commituj `.env` do repozytorium**
+- Upewnij się, że `.env` jest wpisany w `.gitignore`
 
 **Opcjonalnie (dobra praktyka):** dodaj do repo plik `.env.example` bez sekretów:
 
@@ -132,7 +152,7 @@ Copy-Item .env.example .env
 ## Przygotowanie Excela (`team.xlsx`)
 
 - Plik wejściowy domyślnie: **`team.xlsx`**
-- ID profilu ZwiftPower powinno być w **kolumnie B** (druga kolumna).
+- ID profilu ZwiftPower powinno być w **kolumnie B** (druga kolumna)
 - Skrypt dopisuje (jeśli brakuje) i/lub uzupełnia kolumny:
 
   - `Weight`
