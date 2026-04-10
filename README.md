@@ -241,3 +241,21 @@ ZwiftPower używa wykresów renderowanych w JS (Highcharts). Skrypt ma fallback,
 ## Technologie
 
 Python, Pandas, Selenium, BeautifulSoup4, python-dotenv, openpyxl
+
+---
+
+## Roadmap / Dalszy rozwój
+
+Obecna wersja projektu działa jako lokalne narzędzie automatyzujące pobieranie danych z profili ZwiftPower i aktualizację pliku Excel. Kolejnym krokiem jest rozwój projektu w kierunku łatwiejszego wdrażania, większej powtarzalności środowiska oraz lepszej automatyzacji uruchomienia.
+
+Planowane kierunki rozwoju:
+
+- [ ] Dodanie `Dockerfile` do uruchamiania aplikacji w kontenerze
+- [ ] Przygotowanie obrazu zawierającego wszystkie wymagane zależności (`Python`, `Selenium`, `Chrome/Chromium`)
+- [ ] Dodanie `.env.example` jako szablonu konfiguracji
+- [ ] Dodanie testów dla modułów niezależnych od Selenium
+- [ ] Rozbudowa walidacji pliku wejściowego i komunikatów błędów
+- [ ] Możliwość uruchamiania cyklicznego (np. cron / harmonogram zadań)
+- [ ] Opcjonalny eksport danych do CSV
+
+Docelowo projekt ma być rozwijany nie tylko jako skrypt automatyzacyjny, ale jako bardziej kompletne i przenośne narzędzie, które można łatwo uruchomić w różnych środowiskach.
