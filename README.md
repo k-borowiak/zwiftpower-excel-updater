@@ -8,6 +8,8 @@ Narzędzie w Pythonie, które automatycznie uzupełnia plik Excel (`team.xlsx`) 
 
 Skrypt loguje się przez Zwift SSO, pobiera dane ze strony profilu i zapisuje wyniki do nowego pliku Excel.
 
+Projekt można uruchamiać zarówno **lokalnie**, jak i w **kontenerze Docker**.
+
 > ⚠️ Używaj zgodnie z regulaminem serwisu oraz tylko do legalnych celów (np. własne dane / zgoda zespołu).
 
 ---
@@ -41,6 +43,9 @@ Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspie
 ├─ .env                 # plik lokalny z danymi logowania
 ├─ .env.example         # przykładowy szablon konfiguracji
 ├─ .gitignore           # pliki i katalogi ignorowane przez Git
+├─ .dockerignore        # pliki pomijane przy budowaniu obrazu
+├─ Dockerfile           # definicja obrazu Docker
+├─ compose.yaml         # konfiguracja uruchomienia przez Docker Compose
 └─ zp_updater/
    ├─ __init__.py
    ├─ config.py
@@ -53,8 +58,14 @@ Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspie
 
 ## Wymagania
 
+### Uruchomienie lokalne
 - Python **3.10+**
 - Google Chrome (zainstalowany lokalnie)
+- Konto Zwift / ZwiftPower (login i hasło)
+
+### Uruchomienie przez Docker
+- Docker
+- Docker Compose
 - Konto Zwift / ZwiftPower (login i hasło)
 
 ---
@@ -68,7 +79,7 @@ git clone https://github.com/<twoj-login>/zwiftpower-excel-updater.git
 cd zwiftpower-excel-updater
 ```
 
-### 2) (Zalecane) Utwórz środowisko wirtualne
+### 2) (Zalecane) Utwórz środowisko wirtualne — tylko dla uruchomienia lokalnego
 
 ```bash
 python -m venv .venv
@@ -86,11 +97,15 @@ Aktywacja:
 source .venv/bin/activate
 ```
 
-### 3) Zainstaluj zależności
+### 3) Zainstaluj zależności — tylko dla uruchomienia lokalnego
 
 ```bash
 pip install -r requirements.txt
 ```
+
+### 4) Docker — bez lokalnej instalacji Pythona i Chrome
+
+Jeśli uruchamiasz projekt przez Docker, nie musisz lokalnie instalować Pythona ani Google Chrome. Wystarczy poprawnie skonfigurowany Docker / Docker Compose oraz plik `.env`.
 
 ---
 
@@ -168,6 +183,8 @@ Copy-Item .env.example .env
 
 ## Uruchomienie
 
+### Uruchomienie lokalne
+
 Tryb headless (bez okna przeglądarki):
 
 ```bash
@@ -178,6 +195,20 @@ Przykład z parametrami:
 
 ```bash
 python main.py -i team.xlsx -o updated_team.xlsx --headless --timeout 20 --sleep 0.6
+```
+
+### Uruchomienie przez Docker
+
+Pierwsze uruchomienie / po zmianach w obrazie:
+
+```bash
+docker compose run --rm --build zp-updater
+```
+
+Kolejne uruchomienia:
+
+```bash
+docker compose run --rm zp-updater
 ```
 
 Po zakończeniu powstaną:
@@ -238,26 +269,44 @@ python main.py
 
 ZwiftPower używa wykresów renderowanych w JS (Highcharts). Skrypt ma fallback, ale jeśli strona zmieni strukturę, selektory mogą wymagać aktualizacji. Szczegóły będą w `errors.log`.
 
+### 5) Kontener Docker kończy działanie od razu
+
+To normalne — projekt uruchamiany jest jako jednorazowe zadanie, a nie jako stale działająca usługa.
+
+### 6) Po zmianach w `Dockerfile` lub `requirements.txt` nic się nie zmienia
+
+Uruchom ponownie projekt z opcją `--build`:
+
+```bash
+docker compose run --rm --build zp-updater
+```
+
 ---
 
 ## Technologie
 
-Python, Pandas, Selenium, BeautifulSoup4, python-dotenv, openpyxl
+Python, Pandas, Selenium, BeautifulSoup4, python-dotenv, openpyxl, Docker, Docker Compose
 
 ---
 
 ## Roadmap / Dalszy rozwój
 
-Obecna wersja projektu działa jako lokalne narzędzie automatyzujące pobieranie danych z profili ZwiftPower i aktualizację pliku Excel. Kolejnym krokiem jest rozwój projektu w kierunku łatwiejszego wdrażania, większej powtarzalności środowiska oraz lepszej automatyzacji uruchomienia.
+Obecna wersja projektu działa zarówno lokalnie, jak i w kontenerze Docker, co daje już prostszy setup oraz bardziej powtarzalne środowisko uruchomieniowe. Kolejne kroki to uporządkowanie warstwy konfiguracyjnej i walidacji, dodanie podstawowych testów dla modułów niezależnych od Selenium oraz przygotowanie projektu pod bardziej automatyczne uruchamianie i wdrażanie.
+
 
 Planowane kierunki rozwoju:
 
 - [x] Dodanie `Dockerfile` do uruchamiania aplikacji w kontenerze
 - [x] Przygotowanie obrazu zawierającego wszystkie wymagane zależności (`Python`, `Selenium`, `Chrome/Chromium`)
 - [x] Dodanie `.env.example` jako szablonu konfiguracji
+- [x] Dodanie `compose.yaml` do wygodnego uruchamiania projektu przez Docker Compose
+- [ ] Uporządkowanie konfiguracji pod bardziej bezobsługowe uruchamianie
 - [ ] Dodanie testów dla modułów niezależnych od Selenium
 - [ ] Rozbudowa walidacji pliku wejściowego i komunikatów błędów
-- [ ] Możliwość uruchamiania cyklicznego (np. cron / harmonogram zadań)
+- [ ] Dodanie prostego workflow CI (np. GitHub Actions: lint / test / build obrazu)
+- [ ] Przygotowanie infrastruktury jako kodu (Terraform)
+- [ ] Weryfikacja uruchamiania projektu w AWS (np. jako zadanie uruchamiane okresowo)
 - [ ] Opcjonalny eksport danych do CSV
 
-Docelowo projekt ma być rozwijany nie tylko jako skrypt automatyzacyjny, ale jako bardziej kompletne i przenośne narzędzie, które można łatwo uruchomić w różnych środowiskach.
+
+Docelowo projekt ma rozwijać się z prostego skryptu automatyzacyjnego w bardziej kompletne i przenośne narzędzie, które można łatwo uruchomić lokalnie, w Dockerze, a w kolejnym etapie również wdrażać i utrzymywać w środowisku chmurowym z wykorzystaniem Terraform oraz wybranego sposobu uruchamiania zadań.
