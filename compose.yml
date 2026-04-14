@@ -1,0 +1,17 @@
+services:
+  zp-updater:
+    build: .
+    container_name: zp-updater
+    working_dir: /app
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    command: >
+      python main.py
+      -i team.xlsx
+      -o updated_team.xlsx
+      --headless
+      --timeout 20
+      --sleep 0.6
+    shm_size: "2gb"

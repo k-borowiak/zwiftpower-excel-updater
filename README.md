@@ -252,8 +252,8 @@ Obecna wersja projektu działa jako lokalne narzędzie automatyzujące pobierani
 
 Planowane kierunki rozwoju:
 
-- [ ] Dodanie `Dockerfile` do uruchamiania aplikacji w kontenerze
-- [ ] Przygotowanie obrazu zawierającego wszystkie wymagane zależności (`Python`, `Selenium`, `Chrome/Chromium`)
+- [x] Dodanie `Dockerfile` do uruchamiania aplikacji w kontenerze
+- [x] Przygotowanie obrazu zawierającego wszystkie wymagane zależności (`Python`, `Selenium`, `Chrome/Chromium`)
 - [x] Dodanie `.env.example` jako szablonu konfiguracji
 - [ ] Dodanie testów dla modułów niezależnych od Selenium
 - [ ] Rozbudowa walidacji pliku wejściowego i komunikatów błędów

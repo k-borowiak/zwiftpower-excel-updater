@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+.github/
+
+# Sekrety / lokalne configi
+.env
+.env.*
+!.env.example
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Virtualenv
+.venv/
+venv/
+
+# Wyniki / logi
+*.log
+errors.log
+updated_team.xlsx
+
+# Edytory / system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
