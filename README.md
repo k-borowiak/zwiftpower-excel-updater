@@ -304,7 +304,7 @@ Planowane kierunki rozwoju:
 - [x] Dodanie podstawowych testów smoke (importy, CLI)
 - [ ] Dodanie testów dla modułów niezależnych od Selenium
 - [ ] Rozbudowa walidacji pliku wejściowego i komunikatów błędów
-- [x] Dodanie prostego workflow CI (np. GitHub Actions: test / build obrazu)
+- [x] Dodanie prostego workflow CI (GitHub Actions: test / build obrazu)
 - [ ] Przygotowanie infrastruktury jako kodu (Terraform)
 - [ ] Weryfikacja uruchamiania projektu w AWS (np. jako zadanie uruchamiane okresowo)
 - [ ] Opcjonalny eksport danych do CSV
