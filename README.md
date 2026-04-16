@@ -305,6 +305,7 @@ Planowane kierunki rozwoju:
 - [ ] Dodanie testów dla modułów niezależnych od Selenium
 - [ ] Rozbudowa walidacji pliku wejściowego i komunikatów błędów
 - [x] Dodanie prostego workflow CI (GitHub Actions: test / build obrazu)
+- [x] Automatyczna publikacja obrazu na DockerHub (GitHub Actions)
 - [ ] Przygotowanie infrastruktury jako kodu (Terraform)
 - [ ] Weryfikacja uruchamiania projektu w AWS (np. jako zadanie uruchamiane okresowo)
 - [ ] Opcjonalny eksport danych do CSV
