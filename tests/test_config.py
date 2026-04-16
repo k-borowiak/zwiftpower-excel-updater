@@ -2,11 +2,11 @@ import pytest
 import zp_updater.config as config
 
 
-def test_load_credentials_env_missing(monkeypatch):
+def test_fails_without_credentials(monkeypatch):
     # Blokuje ładowanie .env
     monkeypatch.setattr(config, "load_dotenv", lambda: None)
 
-    # Usuwam zmienne środowiskowe, jeśli istnieją
+    # Usuwa zmienne środowiskowe, jeśli istnieją
     monkeypatch.delenv("ZP_USERNAME", raising=False)
     monkeypatch.delenv("ZP_PASSWORD", raising=False)
 
@@ -14,7 +14,7 @@ def test_load_credentials_env_missing(monkeypatch):
         config.load_credentials()
 
 
-def test_load_credentials_returns_values_from_env(monkeypatch):
+def test_reads_credentials_from_env(monkeypatch):
     # Blokuje ładowanie .env
     monkeypatch.setattr(config, "load_dotenv", lambda: None)
 

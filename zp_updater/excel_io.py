@@ -15,7 +15,7 @@ def read_team_excel(path: Path) -> pd.DataFrame:
 
 def ensure_output_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Dodaje brakujące kolumny wyjściowe. Niczego nie przemianowuje po indeksie.
+    Dodaje brakujące kolumny wyjściowe.
     """
     for col in REQUIRED_COLUMNS:
         if col not in df.columns:
@@ -26,7 +26,6 @@ def ensure_output_columns(df: pd.DataFrame) -> pd.DataFrame:
 def extract_profile_ids(df: pd.DataFrame, id_col_index: int = 1) -> List[Tuple[int, int]]:
     """
     Zwraca listę (row_index, profile_id_int) dla poprawnych ID z kolumny `id_col_index`.
-
     - Czyści wartości do numerów (pd.to_numeric)
     - Pomija NaN
     - Rzutuje do int
@@ -51,7 +50,6 @@ def extract_profile_ids(df: pd.DataFrame, id_col_index: int = 1) -> List[Tuple[i
 def validate_input_dataframe(df: pd.DataFrame, id_col_index: int = 1) -> None:
     """
     Waliduje, czy DataFrame nadaje się do dalszego przetwarzania.
-
     Warunki minimalne:
     - istnieje kolumna z ID pod wskazanym indeksem
     - w tej kolumnie jest przynajmniej jedno poprawne ID profilu

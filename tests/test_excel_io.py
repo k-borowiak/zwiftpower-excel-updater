@@ -11,7 +11,7 @@ from zp_updater.excel_io import (
 )
 
 
-def test_ensure_output_columns_adds_missing_columns():
+def test_adds_missing_output_columns():
     df = pd.DataFrame({
         "Name": ["Alice"],
         "Power_1min": [300],
@@ -26,7 +26,7 @@ def test_ensure_output_columns_adds_missing_columns():
     assert pd.isna(result.loc[0, "Weight"])
 
 
-def test_extract_profile_ids_returns_only_valid_ids():
+def test_skips_invalid_profile_ids():
     df = pd.DataFrame({
         "Name": ["A", "B", "C", "D", "E"],
         "ProfileID": ["101", "abc", None, 202.0, "303"],
@@ -37,7 +37,7 @@ def test_extract_profile_ids_returns_only_valid_ids():
     assert result == [(0, 101), (3, 202), (4, 303)]
 
 
-def test_extract_profile_ids_returns_empty_list_when_column_missing():
+def test_handles_missing_id_column():
     df = pd.DataFrame({
         "OnlyColumn": ["x", "y", "z"],
     })
@@ -47,7 +47,7 @@ def test_extract_profile_ids_returns_empty_list_when_column_missing():
     assert result == []
 
 
-def test_write_and_read_team_excel_roundtrip(tmp_path):
+def test_excel_roundtrip(tmp_path):
     df = pd.DataFrame({
         "Name": ["Alice", "Bob"],
         "ProfileID": [111, 222],
@@ -62,7 +62,7 @@ def test_write_and_read_team_excel_roundtrip(tmp_path):
     pd.testing.assert_frame_equal(loaded, df, check_dtype=False)
 
 
-def test_validate_input_dataframe_raises_when_id_column_missing():
+def test_fails_when_id_column_is_missing():
     df = pd.DataFrame({
         "OnlyColumn": ["x", "y"],
     })
@@ -71,7 +71,7 @@ def test_validate_input_dataframe_raises_when_id_column_missing():
         validate_input_dataframe(df, id_col_index=1)
 
 
-def test_validate_input_dataframe_raises_when_no_valid_ids():
+def test_fails_when_no_valid_ids():
     df = pd.DataFrame({
         "Name": ["Alice", "Bob"],
         "ProfileID": ["abc", None],
@@ -81,7 +81,7 @@ def test_validate_input_dataframe_raises_when_no_valid_ids():
         validate_input_dataframe(df, id_col_index=1)
 
 
-def test_validate_input_dataframe_passes_for_valid_input():
+def test_accepts_valid_dataframe():
     df = pd.DataFrame({
         "Name": ["Alice", "Bob"],
         "ProfileID": ["123", "456"],
