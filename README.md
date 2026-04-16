@@ -300,7 +300,7 @@ Planowane kierunki rozwoju:
 - [x] Przygotowanie obrazu zawierającego wszystkie wymagane zależności (`Python`, `Selenium`, `Chrome/Chromium`)
 - [x] Dodanie `.env.example` jako szablonu konfiguracji
 - [x] Dodanie `compose.yaml` do wygodnego uruchamiania projektu przez Docker Compose
-- [ ] Uporządkowanie konfiguracji pod bardziej bezobsługowe uruchamianie
+- [x] Uporządkowanie konfiguracji i walidacji wejścia pod bardziej bezobsługowe uruchamianie
 - [x] Dodanie podstawowych testów smoke (importy, CLI)
 - [x] Dodanie testów dla modułów niezależnych od Selenium
 - [x] Rozbudowa walidacji pliku wejściowego i komunikatów błędów
