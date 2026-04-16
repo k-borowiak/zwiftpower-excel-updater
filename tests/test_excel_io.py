@@ -1,10 +1,12 @@
 import pandas as pd
+import pytest
 
 from zp_updater.excel_io import (
     REQUIRED_COLUMNS,
     ensure_output_columns,
     extract_profile_ids,
     read_team_excel,
+    validate_input_dataframe,
     write_team_excel,
 )
 
@@ -20,10 +22,7 @@ def test_ensure_output_columns_adds_missing_columns():
     for col in REQUIRED_COLUMNS:
         assert col in result.columns
 
-    # istniejąca kolumna nie może zostać nadpisana
     assert result.loc[0, "Power_1min"] == 300
-
-    # nowo dodana kolumna powinna być pusta
     assert pd.isna(result.loc[0, "Weight"])
 
 
@@ -61,3 +60,31 @@ def test_write_and_read_team_excel_roundtrip(tmp_path):
 
     assert output_path.exists()
     pd.testing.assert_frame_equal(loaded, df, check_dtype=False)
+
+
+def test_validate_input_dataframe_raises_when_id_column_missing():
+    df = pd.DataFrame({
+        "OnlyColumn": ["x", "y"],
+    })
+
+    with pytest.raises(ValueError, match="Brakuje kolumny z ID profilu"):
+        validate_input_dataframe(df, id_col_index=1)
+
+
+def test_validate_input_dataframe_raises_when_no_valid_ids():
+    df = pd.DataFrame({
+        "Name": ["Alice", "Bob"],
+        "ProfileID": ["abc", None],
+    })
+
+    with pytest.raises(ValueError, match="Nie znaleziono żadnego poprawnego ID profilu"):
+        validate_input_dataframe(df, id_col_index=1)
+
+
+def test_validate_input_dataframe_passes_for_valid_input():
+    df = pd.DataFrame({
+        "Name": ["Alice", "Bob"],
+        "ProfileID": ["123", "456"],
+    })
+
+    validate_input_dataframe(df, id_col_index=1)

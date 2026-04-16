@@ -48,5 +48,25 @@ def extract_profile_ids(df: pd.DataFrame, id_col_index: int = 1) -> List[Tuple[i
     return out
 
 
+def validate_input_dataframe(df: pd.DataFrame, id_col_index: int = 1) -> None:
+    """
+    Waliduje, czy DataFrame nadaje się do dalszego przetwarzania.
+
+    Warunki minimalne:
+    - istnieje kolumna z ID pod wskazanym indeksem
+    - w tej kolumnie jest przynajmniej jedno poprawne ID profilu
+    """
+    if df.shape[1] <= id_col_index:
+        raise ValueError(
+            f"Brakuje kolumny z ID profilu pod indeksem {id_col_index}."
+        )
+
+    profile_ids = extract_profile_ids(df, id_col_index=id_col_index)
+    if not profile_ids:
+        raise ValueError(
+            "Nie znaleziono żadnego poprawnego ID profilu w kolumnie wejściowej."
+        )
+
+
 def write_team_excel(df: pd.DataFrame, path: Path) -> None:
     df.to_excel(path, index=False, engine="openpyxl")
