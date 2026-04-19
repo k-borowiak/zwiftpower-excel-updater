@@ -14,71 +14,52 @@ Projekt można uruchamiać zarówno **lokalnie**, jak i w **kontenerze Docker**.
 
 ---
 
-## Cel projektu
+## Quick start
 
-Projekt został stworzony w celu **automatyzacji procesu zbierania i aktualizacji danych zawodników** z serwisu ZwiftPower, tak aby **ułatwić zarządzanie teamem kapitanom oraz osobom odpowiedzialnym za organizację składu**.
+### Uruchomienie lokalne
+1. Sklonuj repozytorium
+2. Skopiuj `.env.example` do `.env` i uzupełnij dane logowania
+3. Przygotuj plik `team.xlsx`
+4. Uruchom:
 
-W praktyce zarządzanie zespołem często wymaga regularnego sprawdzania parametrów zawodników, takich jak masa ciała, zFTP czy wartości mocy na różnych odcinkach czasu. Ręczne wchodzenie na każdy profil osobno, kopiowanie danych i przenoszenie ich do Excela jest czasochłonne, powtarzalne i podatne na błędy.
-
-Ten skrypt rozwiązuje ten problem poprzez:
-
-- **automatyczne pobieranie danych wszystkich członków teamu**
-- **zebranie ich w jednym, uporządkowanym pliku Excel**
-- **ułatwienie aktualizacji danych bez ręcznego przepisywania**
-- **przyspieszenie pracy kapitanów i managerów zespołu**
-- **uproszczenie analizy oraz porównywania zawodników**
-
-Dzięki temu zamiast ręcznie sprawdzać profile jednego po drugim, można w prosty sposób przygotować aktualny arkusz z najważniejszymi danymi całego zespołu. Pozwala to na **łatwiejsze zarządzanie teamem, szybsze podejmowanie decyzji oraz utrzymywanie wszystkich kluczowych informacji w jednym miejscu**.
-
-Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspierające codzienną organizację pracy wokół teamu — szczególnie tam, gdzie liczy się szybki dostęp do aktualnych danych zawodników.
-
----
-
-## Struktura projektu
-
-
-```text
-.
-├─ main.py
-├─ README.md
-├─ requirements.txt
-├─ team.xlsx
-├─ .env                 # plik lokalny z danymi logowania
-├─ .env.example         # przykładowy szablon konfiguracji
-├─ .gitignore           # pliki i katalogi ignorowane przez Git
-├─ .dockerignore        # pliki pomijane przy budowaniu obrazu
-├─ Dockerfile           # definicja obrazu Docker
-├─ compose.yaml         # konfiguracja uruchomienia przez Docker Compose
-├─ docs/
-│  └─ architecture/
-│     ├─ lambda-v1.drawio      # edytowalny diagram architektury
-│     ├─ lambda-v1.png         # podgląd diagramu
-│     └─ lambda-v1.md          # krótka notatka opisująca architekturę
-└─ zp_updater/
-   ├─ __init__.py
-   ├─ config.py
-   ├─ excel_io.py
-   ├─ logging_utils.py
-   └─ scraper.py
+```bash
+python main.py --headless
 ```
 
+### Uruchomienie przez Docker
+```bash
+docker compose run --rm --build zp-updater
+```
+
+Po zakończeniu skrypt zapisze plik `updated_team.xlsx`.
+
 ---
 
-## Architektura AWS (wstępny szkic)
+## Cel projektu
 
-![Lambda architecture](docs/architecture/lambda-v1.png)
+Projekt został stworzony w celu automatyzacji procesu zbierania i aktualizacji danych zawodników z serwisu ZwiftPower, tak aby ułatwić zarządzanie teamem oraz przygotowanie aktualnego arkusza z danymi zawodników.
 
-W repo znajduje się roboczy szkic architektury wariantu Lambda:
+W praktyce skrypt:
 
-- źródło diagramu: `docs/architecture/lambda-v1.drawio`
-- podgląd: `docs/architecture/lambda-v1.png`
+- pobiera dane wszystkich członków teamu z listy w Excelu,
+- zbiera je w jednym uporządkowanym pliku,
+- eliminuje ręczne przepisywanie danych,
+- przyspiesza pracę kapitanów i managerów zespołu,
+- ułatwia analizę i porównywanie zawodników.
 
-Założenia:
-- obraz kontenera przechowywany w ECR
-- zadanie uruchamiane przez EventBridge Scheduler
-- plik wejściowy i wyjściowy przechowywany w S3
-- dane logowania przechowywane w Parameter Store
-- logi trafiają do CloudWatch Logs
+Dzięki temu zamiast ręcznie odwiedzać profile jeden po drugim, można szybko przygotować aktualny arkusz z najważniejszymi danymi całego zespołu.
+
+---
+
+## Dokumentacja
+
+Szczegółowe informacje zostały rozdzielone do osobnych plików:
+
+- konfiguracja: `docs/configuration.md`
+- uruchamianie: `docs/usage.md`
+- najczęstsze problemy: `docs/troubleshooting.md`
+- szkic architektury AWS: `docs/architecture/lambda-v1.png`
+- notatka architektoniczna: `docs/architecture/lambda-v1.md`
 
 ---
 
@@ -96,236 +77,88 @@ Założenia:
 
 ---
 
-## Instalacja
-
-### 1) Sklonuj repozytorium i przejdź do katalogu projektu
-
-```bash
-git clone https://github.com/<twoj-login>/zwiftpower-excel-updater.git
-cd zwiftpower-excel-updater
-```
-
-### 2) (Zalecane) Utwórz środowisko wirtualne — tylko dla uruchomienia lokalnego
-
-```bash
-python -m venv .venv
-```
-
-Aktywacja:
-
-**Windows (PowerShell):**
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-**Linux/Mac:**
-```bash
-source .venv/bin/activate
-```
-
-### 3) Zainstaluj zależności — tylko dla uruchomienia lokalnego
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4) Docker — bez lokalnej instalacji Pythona i Chrome
-
-Jeśli uruchamiasz projekt przez Docker, nie musisz lokalnie instalować Pythona ani Google Chrome. Wystarczy poprawnie skonfigurowany Docker / Docker Compose oraz plik `.env`.
-
----
-
-## Konfiguracja: plik `.env` (login i hasło)
-
-Skrypt pobiera dane logowania z pliku `.env`, aby nie trzymać sekretów w kodzie.
-
-### Gdzie umieścić `.env`?
-
-Plik `.env` musi znajdować się w **głównym katalogu projektu**, obok `main.py`:
+## Struktura projektu
 
 ```text
 .
+├─ .github/
+│  └─ workflows/
+│     ├─ ci.yml
+│     └─ publish-dockerhub.yml
+├─ docs/
+│  ├─ configuration.md
+│  ├─ usage.md
+│  ├─ troubleshooting.md
+│  └─ architecture/
+│     ├─ lambda-v1.drawio
+│     ├─ lambda-v1.md
+│     └─ lambda-v1.png
+├─ tests/
+│  ├─ test_cli_help.py
+│  ├─ test_config.py
+│  ├─ test_excel_io.py
+│  └─ test_imports.py
+├─ zp_updater/
+│  ├─ __init__.py
+│  ├─ config.py
+│  ├─ excel_io.py
+│  ├─ logging_utils.py
+│  └─ scraper.py
+├─ .dockerignore
+├─ .env.example
+├─ .gitignore
+├─ Dockerfile
+├─ README.md
+├─ compose.yml
 ├─ main.py
-├─ team.xlsx
-└─ .env
-```
-
-### Jak utworzyć `.env`?
-
-Utwórz plik tekstowy o nazwie dokładnie **`.env`** i wklej:
-
-```env
-ZP_USERNAME=twoj_login
-ZP_PASSWORD=twoje_haslo
-```
-
-Jeśli hasło zawiera spacje lub nietypowe znaki, użyj cudzysłowów:
-
-```env
-ZP_USERNAME="twoj_login"
-ZP_PASSWORD="hasło ze spacją"
-```
-
-### Bezpieczeństwo
-
-- **Nie commituj `.env` do repozytorium**
-- Upewnij się, że `.env` jest wpisany w `.gitignore`
-
-**Opcjonalnie (dobra praktyka):** dodaj do repo plik `.env.example` bez sekretów:
-
-```env
-ZP_USERNAME=
-ZP_PASSWORD=
-```
-
-Użytkownik może wtedy skopiować szablon:
-
-**Linux/Mac:**
-```bash
-cp .env.example .env
-```
-
-**Windows (PowerShell):**
-```powershell
-Copy-Item .env.example .env
+├─ requirements.txt
+└─ team.xlsx
 ```
 
 ---
 
-## Przygotowanie Excela (`team.xlsx`)
+## Architektura AWS (wstępny szkic)
 
-- Plik wejściowy domyślnie: **`team.xlsx`**
-- ID profilu ZwiftPower powinno być w **kolumnie B** (druga kolumna)
-- Skrypt dopisuje (jeśli brakuje) i/lub uzupełnia kolumny:
+![Lambda architecture](docs/architecture/lambda-v1.png)
 
-  - `Weight`
-  - `zFTP`
-  - `Power_15sec`
-  - `Power_1min`
-  - `Power_5min`
-  - `Power_20min`
+- źródło diagramu: `docs/architecture/lambda-v1.drawio`
+- notatka architektoniczna: `docs/architecture/lambda-v1.md`
 
----
-
-## Uruchomienie
-
-### Uruchomienie lokalne
-
-Tryb headless (bez okna przeglądarki):
-
-```bash
-python main.py --headless
-```
-
-Przykład z parametrami:
-
-```bash
-python main.py -i team.xlsx -o updated_team.xlsx --headless --timeout 20 --sleep 0.6
-```
-
-### Uruchomienie przez Docker
-
-Pierwsze uruchomienie / po zmianach w obrazie:
-
-```bash
-docker compose run --rm --build zp-updater
-```
-
-Kolejne uruchomienia:
-
-```bash
-docker compose run --rm zp-updater
-```
-
-Po zakończeniu powstaną:
-
-- `updated_team.xlsx` — plik wynikowy z uzupełnionymi danymi
-- `errors.log` — log błędów/wyjątków (jeśli jakiś profil nie przejdzie)
-
----
-
-## Argumenty (opcjonalne)
-
-- `-i / --input` — plik wejściowy (domyślnie `team.xlsx`)
-- `-o / --output` — plik wyjściowy (domyślnie `updated_team.xlsx`)
-- `--headless` — uruchom Chrome w tle (bez GUI)
-- `--timeout` — timeout Selenium (sekundy)
-- `--sleep` — opóźnienie między profilami (sekundy; pomaga stabilności)
-- `--log-file` — nazwa pliku logów (domyślnie `errors.log`)
-- `--id-column-index` — indeks kolumny z ID (0-based), domyślnie `1` (kolumna B)
-
----
-
-## Najczęstsze problemy
-
-### 1) „Brakuje danych logowania w .env…”
-
-Sprawdź:
-
-- czy plik nazywa się dokładnie **`.env`** (nie `.env.txt`)
-- czy jest obok `main.py`
-- czy zawiera `ZP_USERNAME` i `ZP_PASSWORD`
-
-### 2) Windows: problem z utworzeniem `.env`
-
-Windows czasem utrudnia tworzenie plików z kropką na początku nazwy. Utwórz plik przez terminal:
-
-```powershell
-New-Item -Name ".env" -ItemType "file"
-```
-
-Następnie edytuj go i wklej `ZP_USERNAME` / `ZP_PASSWORD`.
-
-### 3) Selenium/Chrome nie startuje
-
-- zaktualizuj Chrome
-- zaktualizuj Selenium:
-
-```bash
-pip install -U selenium
-```
-
-- uruchom bez headless (diagnostyka):
-
-```bash
-python main.py
-```
-
-### 4) Brak danych mocy z wykresu
-
-ZwiftPower używa wykresów renderowanych w JS (Highcharts). Skrypt ma fallback, ale jeśli strona zmieni strukturę, selektory mogą wymagać aktualizacji. Szczegóły będą w `errors.log`.
-
-### 5) Kontener Docker kończy działanie od razu
-
-To normalne — projekt uruchamiany jest jako jednorazowe zadanie, a nie jako stale działająca usługa.
-
-### 6) Po zmianach w `Dockerfile` lub `requirements.txt` nic się nie zmienia
-
-Uruchom ponownie projekt z opcją `--build`:
-
-```bash
-docker compose run --rm --build zp-updater
-```
+Założenia:
+- obraz kontenera przechowywany w ECR
+- zadanie uruchamiane przez EventBridge Scheduler
+- plik wejściowy i wyjściowy przechowywane w S3
+- dane logowania przechowywane w Parameter Store
+- logi trafiają do CloudWatch Logs
 
 ---
 
 ## Technologie
 
-Python, Pandas, Selenium, BeautifulSoup4, python-dotenv, openpyxl, Docker, Docker Compose
+### Aplikacja
+Python, Pandas, Selenium, BeautifulSoup4, python-dotenv, openpyxl
+
+### Uruchamianie i dostarczanie
+Docker, Docker Compose, GitHub Actions, Docker Hub
+
+### Testy
+pytest
+
+### Planowana / projektowana warstwa chmurowa
+AWS Lambda, Amazon ECR, Amazon S3, Amazon EventBridge Scheduler, AWS Systems Manager Parameter Store, Amazon CloudWatch Logs, Terraform
 
 ---
 
 ## Roadmap / Dalszy rozwój
 
-Obecna wersja projektu działa zarówno lokalnie, jak i w kontenerze Docker, co daje już prostszy setup oraz bardziej powtarzalne środowisko uruchomieniowe. Kolejne kroki to uporządkowanie warstwy konfiguracyjnej i walidacji, dodanie podstawowych testów dla modułów niezależnych od Selenium oraz przygotowanie projektu pod bardziej automatyczne uruchamianie i wdrażanie.
-
+Obecna wersja projektu działa zarówno lokalnie, jak i w kontenerze Docker. Kolejne kroki obejmują rozwój infrastruktury, uruchamianie w AWS oraz dalsze rozszerzanie możliwości eksportu danych.
 
 Planowane kierunki rozwoju:
 
 - [x] Dodanie `Dockerfile` do uruchamiania aplikacji w kontenerze
 - [x] Przygotowanie obrazu zawierającego wszystkie wymagane zależności (`Python`, `Selenium`, `Chrome/Chromium`)
 - [x] Dodanie `.env.example` jako szablonu konfiguracji
-- [x] Dodanie `compose.yaml` do wygodnego uruchamiania projektu przez Docker Compose
+- [x] Dodanie `compose.yml` do wygodnego uruchamiania projektu przez Docker Compose
 - [x] Uporządkowanie konfiguracji i walidacji wejścia pod bardziej bezobsługowe uruchamianie
 - [x] Dodanie podstawowych testów smoke (importy, CLI)
 - [x] Dodanie testów dla modułów niezależnych od Selenium
@@ -334,7 +167,3 @@ Planowane kierunki rozwoju:
 - [x] Automatyczna publikacja obrazu na Docker Hub (GitHub Actions)
 - [ ] Przygotowanie infrastruktury jako kodu (Terraform)
 - [ ] Weryfikacja uruchamiania projektu w AWS (np. jako zadanie uruchamiane okresowo)
-- [ ] Opcjonalny eksport danych do CSV
-
-
-Docelowo projekt ma rozwijać się z prostego skryptu automatyzacyjnego w bardziej kompletne i przenośne narzędzie, które można łatwo uruchomić lokalnie, w Dockerze, a w kolejnym etapie również wdrażać i utrzymywać w środowisku chmurowym z wykorzystaniem Terraform oraz wybranego sposobu uruchamiania zadań.
