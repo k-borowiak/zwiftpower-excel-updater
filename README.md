@@ -36,9 +36,12 @@ Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspie
 
 ## Struktura projektu
 
+
 ```text
 .
 ├─ main.py
+├─ README.md
+├─ requirements.txt
 ├─ team.xlsx
 ├─ .env                 # plik lokalny z danymi logowania
 ├─ .env.example         # przykładowy szablon konfiguracji
@@ -46,6 +49,11 @@ Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspie
 ├─ .dockerignore        # pliki pomijane przy budowaniu obrazu
 ├─ Dockerfile           # definicja obrazu Docker
 ├─ compose.yaml         # konfiguracja uruchomienia przez Docker Compose
+├─ docs/
+│  └─ architecture/
+│     ├─ lambda-v1.drawio      # edytowalny diagram architektury
+│     ├─ lambda-v1.png         # podgląd diagramu
+│     └─ lambda-v1.md          # krótka notatka opisująca architekturę
 └─ zp_updater/
    ├─ __init__.py
    ├─ config.py
