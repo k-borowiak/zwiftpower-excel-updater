@@ -145,4 +145,3 @@ Szczegóły działania workflowów można znaleźć w katalogu:
 ```text
 .github/workflows/
 ```
-``
