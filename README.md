@@ -60,7 +60,7 @@ Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspie
    ├─ excel_io.py
    ├─ logging_utils.py
    └─ scraper.py
-
+```
 
 ---
 
