@@ -56,6 +56,24 @@ Projekt został zaprojektowany przede wszystkim jako praktyczne narzędzie wspie
 
 ---
 
+## Architektura AWS (wstępny szkic)
+
+![Lambda architecture](docs/architecture/lambda-v1.png)
+
+W repo znajduje się roboczy szkic architektury wariantu Lambda:
+
+- źródło diagramu: `docs/architecture/lambda-v1.drawio`
+- podgląd: `docs/architecture/lambda-v1.png`
+
+Założenia:
+- obraz kontenera przechowywany w ECR
+- zadanie uruchamiane przez EventBridge Scheduler
+- plik wejściowy i wyjściowy przechowywany w S3
+- dane logowania przechowywane w Parameter Store
+- logi trafiają do CloudWatch Logs
+
+---
+
 ## Wymagania
 
 ### Uruchomienie lokalne
