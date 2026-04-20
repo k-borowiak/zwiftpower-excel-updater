@@ -67,7 +67,7 @@ def test_fails_when_id_column_is_missing():
         "OnlyColumn": ["x", "y"],
     })
 
-    with pytest.raises(ValueError, match="Brakuje kolumny z ID profilu"):
+    with pytest.raises(ValueError, match="Missing profile ID column"):
         validate_input_dataframe(df, id_col_index=1)
 
 
@@ -77,7 +77,7 @@ def test_fails_when_no_valid_ids():
         "ProfileID": ["abc", None],
     })
 
-    with pytest.raises(ValueError, match="Nie znaleziono żadnego poprawnego ID profilu"):
+    with pytest.raises(ValueError, match="No valid ZwiftPower profile IDs found"):
         validate_input_dataframe(df, id_col_index=1)
 
 

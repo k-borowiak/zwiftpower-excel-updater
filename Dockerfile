@@ -59,12 +59,12 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub \
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Kopiujemy sam kod aplikacji
+# Kopiuje sam kod aplikacji
 COPY main.py .
 COPY zp_updater/ ./zp_updater/
 COPY .env.example ./
 
-# Uruchomienie jako zwykły user
+# Tworzy appuser z uprawnieniami do /app
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 

@@ -1,83 +1,83 @@
 # ZwiftPower → Excel Updater
 
-Narzędzie w Pythonie, które automatycznie uzupełnia plik Excel (`team.xlsx`) o dane z profili ZwiftPower:
+A Python tool that automatically fills an Excel file (`team.xlsx`) with data from ZwiftPower rider profiles:
 
 - **Weight (kg)**
 - **zFTP (W)**
 - **Power 15s / 1min / 5min / 20min (W)**
 
-Skrypt loguje się przez Zwift SSO, pobiera dane ze strony profilu i zapisuje wyniki do nowego pliku Excel.
+The script logs in through Zwift SSO, collects data from the rider profile page, and saves the results to a new Excel file.
 
-Projekt można uruchamiać zarówno **lokalnie**, jak i w **kontenerze Docker**.
+The project can be run both **locally** and in a **Docker container**.
 
-> ⚠️ Używaj zgodnie z regulaminem serwisu oraz tylko do legalnych celów (np. własne dane / zgoda zespołu).
+> ⚠️ Use this tool in line with the service terms and only for legal purposes (for example, your own data or data used with team consent).
 
 ---
 
 ## Quick start
 
-### Uruchomienie lokalne
-1. Sklonuj repozytorium
-2. Skopiuj `.env.example` do `.env` i uzupełnij dane logowania
-3. Przygotuj plik `team.xlsx`
-4. Uruchom:
+### Local run
+1. Clone the repository
+2. Copy `.env.example` to `.env` and fill in your login details
+3. Prepare the `team.xlsx` file
+4. Run:
 
 ```bash
 python main.py --headless
 ```
 
-### Uruchomienie przez Docker
+### Docker run
 ```bash
 docker compose run --rm --build zp-updater
 ```
 
-Po zakończeniu skrypt zapisze plik `updated_team.xlsx`.
+After the run, the script will save `updated_team.xlsx`.
 
 ---
 
-## Cel projektu
+## Project purpose
 
-Projekt został stworzony w celu automatyzacji procesu zbierania i aktualizacji danych zawodników z serwisu ZwiftPower, tak aby ułatwić zarządzanie teamem oraz przygotowanie aktualnego arkusza z danymi zawodników.
+This project was created to automate the process of collecting and updating rider data from ZwiftPower, so it is easier to manage a team and prepare an up-to-date spreadsheet with rider data.
 
-W praktyce skrypt:
+In practice, the script:
 
-- pobiera dane wszystkich członków teamu z listy w Excelu,
-- zbiera je w jednym uporządkowanym pliku,
-- eliminuje ręczne przepisywanie danych,
-- przyspiesza pracę kapitanów i managerów zespołu,
-- ułatwia analizę i porównywanie zawodników.
+- collects data for all team members listed in the Excel file,
+- gathers everything into one organized file,
+- removes the need for manual copying,
+- speeds up the work of team captains and managers,
+- makes it easier to analyze and compare riders.
 
-Dzięki temu zamiast ręcznie odwiedzać profile jeden po drugim, można szybko przygotować aktualny arkusz z najważniejszymi danymi całego zespołu.
-
----
-
-## Dokumentacja
-
-Szczegółowe informacje zostały rozdzielone do osobnych plików:
-
-- konfiguracja: `docs/configuration.md`
-- uruchamianie: `docs/usage.md`
-- najczęstsze problemy: `docs/troubleshooting.md`
-- szkic architektury AWS: `docs/architecture/lambda-v1.png`
-- notatka architektoniczna: `docs/architecture/lambda-v1.md`
+Instead of opening profiles one by one by hand, you can quickly prepare an up-to-date spreadsheet with the most important data for the whole team.
 
 ---
 
-## Wymagania
+## Documentation
 
-### Uruchomienie lokalne
+Detailed information has been split into separate files:
+
+- configuration: `docs/configuration.md`
+- running the project: `docs/usage.md`
+- common problems: `docs/troubleshooting.md`
+- AWS architecture sketch: `docs/architecture/lambda-v1.png`
+- architecture note: `docs/architecture/lambda-v1.md`
+
+---
+
+## Requirements
+
+### Local run
 - Python **3.10+**
-- Google Chrome (zainstalowany lokalnie)
-- Konto Zwift / ZwiftPower (login i hasło)
+- Google Chrome (installed locally)
+- Zwift / ZwiftPower account (login and password)
 
-### Uruchomienie przez Docker
+### Docker run
 - Docker
 - Docker Compose
-- Konto Zwift / ZwiftPower (login i hasło)
+- Zwift / ZwiftPower account (login and password)
 
 ---
 
-## Struktura projektu
+## Project structure
 
 ```text
 .
@@ -117,53 +117,53 @@ Szczegółowe informacje zostały rozdzielone do osobnych plików:
 
 ---
 
-## Architektura AWS (wstępny szkic)
+## AWS architecture (initial sketch)
 
 ![Lambda architecture](docs/architecture/lambda-v1.png)
 
-- źródło diagramu: `docs/architecture/lambda-v1.drawio`
-- notatka architektoniczna: `docs/architecture/lambda-v1.md`
+- diagram source: `docs/architecture/lambda-v1.drawio`
+- architecture note: `docs/architecture/lambda-v1.md`
 
-Założenia:
-- obraz kontenera przechowywany w ECR
-- zadanie uruchamiane przez EventBridge Scheduler
-- plik wejściowy i wyjściowy przechowywane w S3
-- dane logowania przechowywane w Parameter Store
-- logi trafiają do CloudWatch Logs
+Assumptions:
+- the container image is stored in ECR
+- the job is triggered by EventBridge Scheduler
+- the input and output files are stored in S3
+- login credentials are stored in Parameter Store
+- logs are written to CloudWatch Logs
 
 ---
 
-## Technologie
+## Technologies
 
-### Aplikacja
+### Application
 Python, Pandas, Selenium, BeautifulSoup4, python-dotenv, openpyxl
 
-### Uruchamianie i dostarczanie
+### Running and delivery
 Docker, Docker Compose, GitHub Actions, Docker Hub
 
-### Testy
+### Tests
 pytest
 
-### Planowana / projektowana warstwa chmurowa
+### Planned / designed cloud layer
 AWS Lambda, Amazon ECR, Amazon S3, Amazon EventBridge Scheduler, AWS Systems Manager Parameter Store, Amazon CloudWatch Logs, Terraform
 
 ---
 
-## Roadmap / Dalszy rozwój
+## Roadmap / Further development
 
-Obecna wersja projektu działa zarówno lokalnie, jak i w kontenerze Docker. Kolejne kroki obejmują rozwój infrastruktury, uruchamianie w AWS oraz dalsze rozszerzanie możliwości eksportu danych.
+The current version of the project works both locally and in Docker. The next steps focus on infrastructure, running the project in AWS, and extending export options.
 
-Planowane kierunki rozwoju:
+Planned next steps:
 
-- [x] Dodanie `Dockerfile` do uruchamiania aplikacji w kontenerze
-- [x] Przygotowanie obrazu zawierającego wszystkie wymagane zależności (`Python`, `Selenium`, `Chrome/Chromium`)
-- [x] Dodanie `.env.example` jako szablonu konfiguracji
-- [x] Dodanie `compose.yml` do wygodnego uruchamiania projektu przez Docker Compose
-- [x] Uporządkowanie konfiguracji i walidacji wejścia pod bardziej bezobsługowe uruchamianie
-- [x] Dodanie podstawowych testów smoke (importy, CLI)
-- [x] Dodanie testów dla modułów niezależnych od Selenium
-- [x] Rozbudowa walidacji pliku wejściowego i komunikatów błędów
-- [x] Dodanie prostego workflow CI (GitHub Actions: test / build obrazu)
-- [x] Automatyczna publikacja obrazu na Docker Hub (GitHub Actions)
-- [ ] Przygotowanie infrastruktury jako kodu (Terraform)
-- [ ] Weryfikacja uruchamiania projektu w AWS (np. jako zadanie uruchamiane okresowo)
+- [x] Add a `Dockerfile` to run the application in a container
+- [x] Prepare an image with all required dependencies (`Python`, `Selenium`, `Chrome/Chromium`)
+- [x] Add `.env.example` as a configuration template
+- [x] Add `compose.yml` for convenient Docker Compose runs
+- [x] Clean up configuration and input validation for more hands-off usage
+- [x] Add basic smoke tests (imports, CLI)
+- [x] Add tests for modules independent from Selenium
+- [x] Extend input file validation and error messages
+- [x] Add a simple CI workflow (GitHub Actions: test / image build)
+- [x] Add automatic Docker Hub image publishing (GitHub Actions)
+- [ ] Prepare infrastructure as code (Terraform)
+- [ ] Verify running the project in AWS (for example as a scheduled job)

@@ -63,7 +63,7 @@ class ZwiftPowerClient:
 
         # czekaj na powrót do ZwiftPower
         self.wait.until(EC.url_contains("zwiftpower.com"))
-        self.logger.info("Zalogowano poprawnie.")
+        self.logger.info("Logged in successfully.")
 
     def scrape_profile(self, profile_id: int) -> ProfileData:
         url = PROFILE_URL.format(profile_id=profile_id)
@@ -88,7 +88,7 @@ class ZwiftPowerClient:
                 data.power_15s, data.power_1m, data.power_5m, data.power_20m = p[:4]
 
         except Exception:
-            self.logger.exception("ID=%s - błąd podczas scrapowania profilu", profile_id)
+            self.logger.exception("ID=%s - error while scraping profile", profile_id)
 
         return data
 

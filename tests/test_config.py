@@ -10,7 +10,7 @@ def test_fails_without_credentials(monkeypatch):
     monkeypatch.delenv("ZP_USERNAME", raising=False)
     monkeypatch.delenv("ZP_PASSWORD", raising=False)
 
-    with pytest.raises(ValueError, match="Brakuje danych logowania"):
+    with pytest.raises(ValueError, match="Missing login credentials"):
         config.load_credentials()
 
 

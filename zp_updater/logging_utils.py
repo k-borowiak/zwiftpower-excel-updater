@@ -15,7 +15,7 @@ def setup_logging(log_file: str = "errors.log") -> logging.Logger:
     logger.propagate = False
 
     if logger.handlers:
-        return logger  # unikamy podwójnych handlerów przy wielokrotnych uruchomieniach
+        return logger  # unikam podwójnych handlerów przy wielokrotnych uruchomieniach
 
     formatter = logging.Formatter(
         fmt="%(asctime)s | %(levelname)s | %(message)s",

@@ -1,18 +1,18 @@
-# Konfiguracja
+# Configuration
 
-Ten dokument opisuje podstawową konfigurację projektu:
+This document describes the basic project configuration:
 
-- dane logowania w pliku `.env`,
-- przygotowanie pliku wejściowego `team.xlsx`,
-- oczekiwany układ danych wejściowych i wyjściowych.
+- login credentials in the `.env` file,
+- preparation of the input file `team.xlsx`,
+- the expected input and output layout.
 
 ---
 
-## Plik `.env`
+## `.env` file
 
-Skrypt pobiera dane logowania z pliku `.env`, aby nie trzymać sekretów w kodzie.
+The script reads login credentials from the `.env` file so secrets do not have to be stored in the code.
 
-Plik `.env` musi znajdować się w **głównym katalogu projektu**, obok `main.py`:
+The `.env` file must be located in the **project root directory**, next to `main.py`:
 
 ```text
 .
@@ -21,25 +21,25 @@ Plik `.env` musi znajdować się w **głównym katalogu projektu**, obok `main.p
 └─ .env
 ```
 
-### Przykład zawartości
+### Example content
 
 ```env
-ZP_USERNAME=twoj_login
-ZP_PASSWORD=twoje_haslo
+ZP_USERNAME=your_login
+ZP_PASSWORD=your_password
 ```
 
-Jeśli hasło zawiera spacje lub nietypowe znaki, użyj cudzysłowów:
+If the password contains spaces or unusual characters, use quotation marks:
 
 ```env
-ZP_USERNAME="twoj_login"
-ZP_PASSWORD="hasło ze spacją"
+ZP_USERNAME="your_login"
+ZP_PASSWORD="password with spaces"
 ```
 
 ---
 
 ## `.env.example`
 
-W repo znajduje się przykładowy plik `.env.example`, który można skopiować jako bazę do lokalnej konfiguracji:
+The repository includes an example `.env.example` file that can be copied as a base for local configuration:
 
 **Linux/Mac**
 ```bash
@@ -51,44 +51,44 @@ cp .env.example .env
 Copy-Item .env.example .env
 ```
 
-Następnie uzupełnij wartości `ZP_USERNAME` i `ZP_PASSWORD`.
+Then fill in the `ZP_USERNAME` and `ZP_PASSWORD` values.
 
 ---
 
-## Bezpieczeństwo
+## Security
 
-- **Nie commituj `.env` do repozytorium**
-- Upewnij się, że `.env` znajduje się w `.gitignore`
-- Nie przechowuj danych logowania bezpośrednio w kodzie ani w skryptach uruchomieniowych
+- **Do not commit `.env` to the repository**
+- Make sure `.env` is listed in `.gitignore`
+- Do not store login credentials directly in the code or in run scripts
 
 ---
 
-## Plik wejściowy `team.xlsx`
+## Input file `team.xlsx`
 
-Domyślny plik wejściowy to:
+The default input file is:
 
 ```text
 team.xlsx
 ```
 
-### Wymagania dotyczące pliku
+### File requirements
 
-- plik musi być w formacie **`.xlsx`**
-- domyślnie ID profilu ZwiftPower powinno znajdować się w **kolumnie B**
-- odpowiada to argumentowi:
+- the file must be in **`.xlsx`** format
+- by default, the ZwiftPower profile ID should be in **column B**
+- this matches the argument:
 
 ```text
 --id-column-index 1
 ```
 
-> Uwaga: indeks kolumny jest **0-based**, czyli:
-> - `0` = kolumna A
-> - `1` = kolumna B
-> - `2` = kolumna C
+> Note: the column index is **0-based**, which means:
+> - `0` = column A
+> - `1` = column B
+> - `2` = column C
 
-Jeśli w Twoim pliku ID znajduje się w innej kolumnie, użyj argumentu `--id-column-index`.
+If your file has the ID in a different column, use the `--id-column-index` argument.
 
-### Przykład
+### Example
 
 ```bash
 python main.py --id-column-index 2
@@ -96,9 +96,9 @@ python main.py --id-column-index 2
 
 ---
 
-## Kolumny uzupełniane przez skrypt
+## Columns updated by the script
 
-Skrypt dopisuje (jeśli brakuje) i/lub uzupełnia następujące kolumny:
+The script adds (if missing) and/or updates the following columns:
 
 - `Weight`
 - `zFTP`
@@ -109,39 +109,39 @@ Skrypt dopisuje (jeśli brakuje) i/lub uzupełnia następujące kolumny:
 
 ---
 
-## Plik wyjściowy
+## Output file
 
-Domyślny plik wynikowy to:
+The default output file is:
 
 ```text
 updated_team.xlsx
 ```
 
-Możesz wskazać inną nazwę pliku wyjściowego za pomocą argumentu `-o / --output`.
+You can set a different output file name with the `-o / --output` argument.
 
-Przykład:
+Example:
 
 ```bash
-python main.py -o wynik.xlsx --headless
+python main.py -o result.xlsx --headless
 ```
 
 ---
 
-## Plik logów
+## Log file
 
-Domyślnie błędy i wyjątki są zapisywane do pliku:
+By default, errors and exceptions are written to:
 
 ```text
 errors.log
 ```
 
-Nazwę pliku logów można zmienić przez argument:
+The log file name can be changed with the following argument:
 
 ```text
 --log-file
 ```
 
-Przykład:
+Example:
 
 ```bash
 python main.py --log-file updater.log --headless

@@ -15,7 +15,7 @@ def read_team_excel(path: Path) -> pd.DataFrame:
 
 def ensure_output_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Dodaje brakujące kolumny wyjściowe.
+    Dodaje brakujące kolumny wyjściowe. Niczego nie przemianowuje po indeksie.
     """
     for col in REQUIRED_COLUMNS:
         if col not in df.columns:
@@ -23,9 +23,27 @@ def ensure_output_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def validate_input_dataframe(df: pd.DataFrame, id_col_index: int = 1) -> None:
+    """
+    Waliduje podstawowe wymagania wejściowego DataFrame.
+    """
+    if df.empty:
+        raise ValueError("Input file is empty")
+
+    if df.shape[1] <= id_col_index:
+        raise ValueError(f"Missing profile ID column at index {id_col_index}")
+
+    ids = pd.to_numeric(df.iloc[:, id_col_index], errors="coerce")
+    if ids.notna().sum() == 0:
+        raise ValueError(
+            f"No valid ZwiftPower profile IDs found in column index {id_col_index}"
+        )
+
+
 def extract_profile_ids(df: pd.DataFrame, id_col_index: int = 1) -> List[Tuple[int, int]]:
     """
     Zwraca listę (row_index, profile_id_int) dla poprawnych ID z kolumny `id_col_index`.
+
     - Czyści wartości do numerów (pd.to_numeric)
     - Pomija NaN
     - Rzutuje do int
@@ -45,25 +63,6 @@ def extract_profile_ids(df: pd.DataFrame, id_col_index: int = 1) -> List[Tuple[i
         except (ValueError, TypeError):
             continue
     return out
-
-
-def validate_input_dataframe(df: pd.DataFrame, id_col_index: int = 1) -> None:
-    """
-    Waliduje, czy DataFrame nadaje się do dalszego przetwarzania.
-    Warunki minimalne:
-    - istnieje kolumna z ID pod wskazanym indeksem
-    - w tej kolumnie jest przynajmniej jedno poprawne ID profilu
-    """
-    if df.shape[1] <= id_col_index:
-        raise ValueError(
-            f"Brakuje kolumny z ID profilu pod indeksem {id_col_index}."
-        )
-
-    profile_ids = extract_profile_ids(df, id_col_index=id_col_index)
-    if not profile_ids:
-        raise ValueError(
-            "Nie znaleziono żadnego poprawnego ID profilu w kolumnie wejściowej."
-        )
 
 
 def write_team_excel(df: pd.DataFrame, path: Path) -> None:
