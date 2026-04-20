@@ -1,83 +1,224 @@
-# ZwiftPower → Excel Updater
+# ZwiftPower Rider Data Pipeline
 
-A Python tool that automatically fills an Excel file (`team.xlsx`) with data from ZwiftPower rider profiles:
+A Python-based automation project for collecting rider performance data from ZwiftPower and updating a structured Excel dataset for team management and analysis.
+
+The project is built as a practical data workflow: scrape → transform → export. It is designed to be easy to run locally, reproducible in Docker, and ready for future cloud execution.
+
+---
+
+## Overview
+
+Managing a Zwift team often means checking multiple rider profiles by hand and copying key metrics into a spreadsheet. That process is repetitive, slow, and easy to get wrong.
+
+This project automates that workflow.
+
+It logs into ZwiftPower through Zwift SSO, collects rider statistics, processes the results, and writes them into a clean Excel output file that can be used for team organization, comparison, and decision-making.
+
+---
+
+## What problem does it solve?
+
+ZwiftPower does not provide a simple way to export structured rider performance data for team-wide use.
+
+In practice, that usually means:
+
+- opening rider profiles one by one,
+- copying values manually,
+- updating spreadsheets by hand,
+- repeating the same work every time the data needs refreshing.
+
+This project removes that manual step and turns it into a repeatable workflow.
+
+---
+
+## What the project does
+
+The pipeline works like this:
+
+```text
+ZwiftPower → Scraper → Processing → Excel output
+```
+
+### Current workflow
+1. Log in through Zwift SSO
+2. Open ZwiftPower rider profiles
+3. Extract rider data
+4. Normalize and update the dataset
+5. Save results to Excel
+
+### Collected data
+For each rider, the project collects:
 
 - **Weight (kg)**
 - **zFTP (W)**
-- **Power 15s / 1min / 5min / 20min (W)**
+- **Power metrics**
+  - 15s
+  - 1min
+  - 5min
+  - 20min
 
-The script logs in through Zwift SSO, collects data from the rider profile page, and saves the results to a new Excel file.
+---
 
-The project can be run both **locally** and in a **Docker container**.
+## Why this project matters
 
-> ⚠️ Use this tool in line with the service terms and only for legal purposes (for example, your own data or data used with team consent).
+This is more than a one-off script.
+
+The project is structured as a small but complete automation system with:
+
+- modular Python code,
+- input validation,
+- reproducible Docker execution,
+- automated tests,
+- CI workflows,
+- and a planned AWS runtime architecture.
+
+It is a practical example of combining:
+- scripting and scraping,
+- data processing,
+- packaging and delivery,
+- and cloud-oriented system design.
 
 ---
 
 ## Quick start
 
 ### Local run
-1. Clone the repository
-2. Copy `.env.example` to `.env` and fill in your login details
-3. Prepare the `team.xlsx` file
-4. Run:
 
 ```bash
+git clone <repo>
+cd zwiftpower-excel-updater
+cp .env.example .env
+# fill in credentials
+
 python main.py --headless
 ```
 
 ### Docker run
+
 ```bash
 docker compose run --rm --build zp-updater
 ```
 
-After the run, the script will save `updated_team.xlsx`.
+The output file will be saved as:
 
----
+```text
+updated_team.xlsx
+```
 
-## Project purpose
-
-This project was created to automate the process of collecting and updating rider data from ZwiftPower, so it is easier to manage a team and prepare an up-to-date spreadsheet with rider data.
-
-In practice, the script:
-
-- collects data for all team members listed in the Excel file,
-- gathers everything into one organized file,
-- removes the need for manual copying,
-- speeds up the work of team captains and managers,
-- makes it easier to analyze and compare riders.
-
-Instead of opening profiles one by one by hand, you can quickly prepare an up-to-date spreadsheet with the most important data for the whole team.
+> Full configuration, usage examples, and troubleshooting are documented in the `docs/` directory.
 
 ---
 
 ## Documentation
 
-Detailed information has been split into separate files:
+Detailed documentation is available here:
 
-- configuration: `docs/configuration.md`
-- running the project: `docs/usage.md`
-- common problems: `docs/troubleshooting.md`
-- AWS architecture sketch: `docs/architecture/lambda-v1.png`
-- architecture note: `docs/architecture/lambda-v1.md`
+- Configuration → `docs/configuration.md`
+- Usage → `docs/usage.md`
+- Troubleshooting → `docs/troubleshooting.md`
+- Architecture sketch → `docs/architecture/lambda-v1.png`
+- Architecture note → `docs/architecture/lambda-v1.md`
 
 ---
 
-## Requirements
+## Architecture
 
-### Local run
-- Python **3.10+**
-- Google Chrome (installed locally)
-- Zwift / ZwiftPower account (login and password)
+The project is intentionally structured in layers:
 
-### Docker run
+- **Ingestion layer** → Selenium + BeautifulSoup
+- **Processing layer** → Pandas
+- **Output layer** → Excel (current)
+- **Execution layer** → CLI / Docker
+- **Planned cloud layer** → AWS Lambda-based scheduled execution
+
+### Planned AWS architecture
+- container image stored in **Amazon ECR**
+- scheduled execution via **EventBridge Scheduler**
+- input/output handled through **Amazon S3**
+- secrets stored in **AWS Systems Manager Parameter Store**
+- logs written to **Amazon CloudWatch Logs**
+
+Architecture files:
+
+- `docs/architecture/lambda-v1.drawio`
+- `docs/architecture/lambda-v1.png`
+- `docs/architecture/lambda-v1.md`
+
+---
+
+## Testing
+
+The project includes basic automated tests covering:
+
+- CLI help output,
+- configuration loading,
+- Excel read/write logic,
+- module imports.
+
+Run all tests with:
+
+```bash
+pytest
+```
+
+---
+
+## Tech stack
+
+### Application
+- Python
+- Pandas
+- Selenium
+- BeautifulSoup4
+- python-dotenv
+- openpyxl
+
+### Delivery and automation
 - Docker
 - Docker Compose
-- Zwift / ZwiftPower account (login and password)
+- GitHub Actions
+- Docker Hub
+
+### Planned cloud layer
+- AWS Lambda
+- Amazon S3
+- Amazon ECR
+- Amazon EventBridge Scheduler
+- AWS Systems Manager Parameter Store
+- Amazon CloudWatch Logs
+- Terraform
 
 ---
 
-## Project structure
+## Roadmap
+
+### Completed
+- core data extraction workflow
+- Excel export
+- Dockerized runtime
+- CI workflow for tests and image build
+- basic automated test coverage
+- modular project structure
+- AWS runtime architecture drafted
+
+### Next steps
+- infrastructure as code with Terraform
+- AWS deployment for scheduled execution
+- cloud-based input/output flow
+- stronger runtime validation and error handling
+- further improvement of automation and portability
+
+---
+
+## Disclaimer
+
+Use this project in accordance with Zwift / ZwiftPower terms of service.
+
+Only collect and use data that you are authorized to access, for example your own data or data used with team consent.
+
+---
+
+## Repository structure
 
 ```text
 .
@@ -114,56 +255,3 @@ Detailed information has been split into separate files:
 ├─ requirements.txt
 └─ team.xlsx
 ```
-
----
-
-## AWS architecture (initial sketch)
-
-![Lambda architecture](docs/architecture/lambda-v1.png)
-
-- diagram source: `docs/architecture/lambda-v1.drawio`
-- architecture note: `docs/architecture/lambda-v1.md`
-
-Assumptions:
-- the container image is stored in ECR
-- the job is triggered by EventBridge Scheduler
-- the input and output files are stored in S3
-- login credentials are stored in Parameter Store
-- logs are written to CloudWatch Logs
-
----
-
-## Technologies
-
-### Application
-Python, Pandas, Selenium, BeautifulSoup4, python-dotenv, openpyxl
-
-### Running and delivery
-Docker, Docker Compose, GitHub Actions, Docker Hub
-
-### Tests
-pytest
-
-### Planned / designed cloud layer
-AWS Lambda, Amazon ECR, Amazon S3, Amazon EventBridge Scheduler, AWS Systems Manager Parameter Store, Amazon CloudWatch Logs, Terraform
-
----
-
-## Roadmap / Further development
-
-The current version of the project works both locally and in Docker. The next steps focus on infrastructure, running the project in AWS, and extending export options.
-
-Planned next steps:
-
-- [x] Add a `Dockerfile` to run the application in a container
-- [x] Prepare an image with all required dependencies (`Python`, `Selenium`, `Chrome/Chromium`)
-- [x] Add `.env.example` as a configuration template
-- [x] Add `compose.yml` for convenient Docker Compose runs
-- [x] Clean up configuration and input validation for more hands-off usage
-- [x] Add basic smoke tests (imports, CLI)
-- [x] Add tests for modules independent from Selenium
-- [x] Extend input file validation and error messages
-- [x] Add a simple CI workflow (GitHub Actions: test / image build)
-- [x] Add automatic Docker Hub image publishing (GitHub Actions)
-- [ ] Prepare infrastructure as code (Terraform)
-- [ ] Verify running the project in AWS (for example as a scheduled job)
