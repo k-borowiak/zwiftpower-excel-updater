@@ -22,36 +22,69 @@ DEFAULT_OUTPUT = "updated_team.xlsx"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Uzupełnia Excel danymi z profili ZwiftPower (Weight, zFTP, moce z wykresu)."
+        description="Fill an Excel file with data from ZwiftPower profiles (Weight, zFTP, and power values from the chart)."
     )
-    parser.add_argument("--input", "-i", default=DEFAULT_INPUT, help="Plik wejściowy XLSX (domyślnie team.xlsx)")
-    parser.add_argument("--output", "-o", default=DEFAULT_OUTPUT, help="Plik wynikowy XLSX (domyślnie updated_team.xlsx)")
-    parser.add_argument("--headless", action="store_true", help="Uruchom Chrome w trybie headless")
-    parser.add_argument("--timeout", type=int, default=15, help="Timeout (sekundy) dla Selenium wait (domyślnie 15)")
-    parser.add_argument("--sleep", type=float, default=0.4, help="Opóźnienie między profilami (sekundy) (domyślnie 0.4)")
-    parser.add_argument("--log-file", default="errors.log", help="Plik logów (domyślnie errors.log)")
-    parser.add_argument("--id-column-index", type=int, default=1, help="Indeks kolumny z ID (0-based), domyślnie 1 (kolumna B)")
+    parser.add_argument(
+        "--input",
+        "-i",
+        default=DEFAULT_INPUT,
+        help="Input XLSX file (default: team.xlsx)",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        default=DEFAULT_OUTPUT,
+        help="Output XLSX file (default: updated_team.xlsx)",
+    )
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        help="Run Chrome in headless mode",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=15,
+        help="Selenium wait timeout in seconds (default: 15)",
+    )
+    parser.add_argument(
+        "--sleep",
+        type=float,
+        default=0.4,
+        help="Delay between profiles in seconds (default: 0.4)",
+    )
+    parser.add_argument(
+        "--log-file",
+        default="errors.log",
+        help="Log file path (default: errors.log)",
+    )
+    parser.add_argument(
+        "--id-column-index",
+        type=int,
+        default=1,
+        help="Profile ID column index (0-based), default: 1 (column B)",
+    )
 
     args = parser.parse_args()
 
     if args.timeout <= 0:
-        parser.error("--timeout musi być większy od 0")
+        parser.error("--timeout must be greater than 0")
 
     if args.sleep < 0:
-        parser.error("--sleep nie może być ujemny")
+        parser.error("--sleep cannot be negative")
 
     if args.id_column_index < 0:
-        parser.error("--id-column-index nie może być ujemny")
+        parser.error("--id-column-index cannot be negative")
 
     return args
 
 
 def validate_input_file(path: Path) -> None:
     if not path.exists():
-        raise FileNotFoundError(f"Nie znaleziono pliku wejściowego: {path}")
+        raise FileNotFoundError(f"Input file not found: {path}")
 
     if path.suffix.lower() != ".xlsx":
-        raise ValueError("Obsługiwany jest tylko plik .xlsx")
+        raise ValueError("Only .xlsx files are supported")
 
 
 def main() -> int:
@@ -75,7 +108,7 @@ def main() -> int:
         logger.error(str(e))
         return 3
     except Exception:
-        logger.exception("Nie udało się wczytać lub zwalidować pliku wejściowego.")
+        logger.exception("Failed to load or validate the input file.")
         return 4
 
     # wczytaj dane logowania
@@ -91,10 +124,10 @@ def main() -> int:
         client = ZwiftPowerClient(headless=args.headless, timeout=args.timeout, logger=logger)
         client.login(username=username, password=password)
 
-        logger.info("Znaleziono %d ID do przetworzenia.", len(ids))
+        logger.info("Found %d profile IDs to process.", len(ids))
 
         for row_idx, profile_id in ids:
-            logger.info("Pobieram dane dla ID=%s (wiersz=%s)", profile_id, row_idx)
+            logger.info("Fetching data for ID=%s (row=%s)", profile_id, row_idx)
 
             data = client.scrape_profile(profile_id=profile_id)
 
@@ -109,7 +142,7 @@ def main() -> int:
                 time.sleep(args.sleep)
 
     except Exception:
-        logger.exception("Wystąpił błąd podczas logowania lub pobierania danych ze ZwiftPower.")
+        logger.exception("An error occurred while logging in or fetching data from ZwiftPower.")
         return 6
     finally:
         if client is not None:
@@ -119,10 +152,10 @@ def main() -> int:
     try:
         write_team_excel(df, output_path)
     except Exception:
-        logger.exception("Nie udało się zapisać pliku wynikowego: %s", output_path)
+        logger.exception("Failed to save the output file: %s", output_path)
         return 7
 
-    logger.info("Gotowe! Zapisano: %s", output_path)
+    logger.info("Done! Saved to: %s", output_path)
     return 0
 
 

@@ -1,45 +1,45 @@
-# Uruchamianie
+# Running the project
 
-Ten dokument opisuje sposoby uruchamiania projektu:
+This document describes the available ways to run the project:
 
-- lokalnie,
-- przez Docker,
-- z dodatkowymi argumentami CLI.
+- locally,
+- with Docker,
+- with additional CLI arguments.
 
 ---
 
-## Wymagania
+## Requirements
 
-### Uruchomienie lokalne
+### Local run
 - Python **3.10+**
-- Google Chrome (zainstalowany lokalnie)
-- Konto Zwift / ZwiftPower
-- poprawnie przygotowany plik `.env`
-- przygotowany plik `team.xlsx`
+- Google Chrome (installed locally)
+- Zwift / ZwiftPower account
+- a properly prepared `.env` file
+- a prepared `team.xlsx` file
 
-### Uruchomienie przez Docker
+### Docker run
 - Docker
 - Docker Compose
-- poprawnie przygotowany plik `.env`
-- przygotowany plik `team.xlsx`
+- a properly prepared `.env` file
+- a prepared `team.xlsx` file
 
 ---
 
-## Uruchomienie lokalne
+## Local run
 
-### Tryb headless
+### Headless mode
 
 ```bash
 python main.py --headless
 ```
 
-### Przykład z dodatkowymi parametrami
+### Example with additional parameters
 
 ```bash
 python main.py -i team.xlsx -o updated_team.xlsx --headless --timeout 20 --sleep 0.6
 ```
 
-### Uruchomienie z własną kolumną ID
+### Run with a custom ID column
 
 ```bash
 python main.py --headless --id-column-index 2
@@ -47,85 +47,85 @@ python main.py --headless --id-column-index 2
 
 ---
 
-## Uruchomienie przez Docker
+## Docker run
 
-### Pierwsze uruchomienie / po zmianach w obrazie
+### First run / after image changes
 
 ```bash
 docker compose run --rm --build zp-updater
 ```
 
-### Kolejne uruchomienia
+### Next runs
 
 ```bash
 docker compose run --rm zp-updater
 ```
 
-> Projekt uruchamiany przez Docker działa jako **jednorazowe zadanie**, a nie jako stale działająca usługa.
+> When run with Docker, the project works as a **one-time job**, not as a long-running service.
 
 ---
 
-## Wynik działania
+## Output
 
-Po zakończeniu skrypt zapisuje:
+After the run, the script saves:
 
-- `updated_team.xlsx` — plik wynikowy z uzupełnionymi danymi
-- `errors.log` — plik logów błędów / wyjątków (jeśli wystąpiły)
-
----
-
-## Argumenty CLI
-
-Dostępne argumenty:
-
-- `-i / --input` — plik wejściowy (domyślnie `team.xlsx`)
-- `-o / --output` — plik wyjściowy (domyślnie `updated_team.xlsx`)
-- `--headless` — uruchom Chrome w tle (bez GUI)
-- `--timeout` — timeout Selenium (sekundy)
-- `--sleep` — opóźnienie między profilami (sekundy)
-- `--log-file` — nazwa pliku logów (domyślnie `errors.log`)
-- `--id-column-index` — indeks kolumny z ID (0-based), domyślnie `1`
+- `updated_team.xlsx` — the output file with updated data
+- `errors.log` — the error / exception log file (if any errors occur)
 
 ---
 
-## Przykładowe użycie
+## CLI arguments
 
-### 1. Domyślne uruchomienie lokalne
+Available arguments:
+
+- `-i / --input` — input file (default: `team.xlsx`)
+- `-o / --output` — output file (default: `updated_team.xlsx`)
+- `--headless` — run Chrome in the background (without GUI)
+- `--timeout` — Selenium timeout (seconds)
+- `--sleep` — delay between profiles (seconds)
+- `--log-file` — log file name (default: `errors.log`)
+- `--id-column-index` — column index for the profile ID (0-based), default: `1`
+
+---
+
+## Usage examples
+
+### 1. Default local run
 ```bash
 python main.py --headless
 ```
 
-### 2. Własny plik wejściowy i wyjściowy
+### 2. Custom input and output file
 ```bash
-python main.py -i zawodnicy.xlsx -o wynik.xlsx --headless
+python main.py -i riders.xlsx -o result.xlsx --headless
 ```
 
-### 3. Większy timeout i większe opóźnienie między profilami
+### 3. Higher timeout and longer delay between profiles
 ```bash
 python main.py --headless --timeout 30 --sleep 1.0
 ```
 
-### 4. Inna kolumna z ID profilu
+### 4. Different profile ID column
 ```bash
 python main.py --headless --id-column-index 0
 ```
 
-### 5. Własna nazwa pliku logów
+### 5. Custom log file name
 ```bash
 python main.py --headless --log-file updater.log
 ```
 
 ---
 
-## Testy
+## Tests
 
-Jeśli chcesz uruchomić testy lokalnie:
+If you want to run the tests locally:
 
 ```bash
 pytest
 ```
 
-Możesz też uruchomić pojedynczy test, np.:
+You can also run a single test, for example:
 
 ```bash
 pytest tests/test_cli_help.py
@@ -133,14 +133,14 @@ pytest tests/test_cli_help.py
 
 ---
 
-## CI / publikacja obrazu
+## CI / image publishing
 
-W repo znajdują się workflow GitHub Actions:
+The repository includes GitHub Actions workflows:
 
-- `ci.yml` — podstawowy workflow CI
-- `publish-dockerhub.yml` — publikacja obrazu na Docker Hub
+- `ci.yml` — the basic CI workflow
+- `publish-dockerhub.yml` — Docker Hub image publishing
 
-Szczegóły działania workflowów można znaleźć w katalogu:
+You can find the workflow files in:
 
 ```text
 .github/workflows/

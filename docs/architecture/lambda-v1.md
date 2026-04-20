@@ -1,24 +1,24 @@
 # Lambda architecture v1
 
-## Cel
-Wstępny szkic architektury AWS dla projektu ZwiftPower Excel Updater.
+## Purpose
+Initial AWS architecture sketch for the ZwiftPower Excel Updater project.
 
-## Główne elementy
-- ECR – przechowuje obraz kontenera dla funkcji Lambda
-- Lambda – wykonuje logikę aplikacji
-- EventBridge Scheduler – uruchamia zadanie okresowo
-- Parameter Store – przechowuje ZP_USERNAME i ZP_PASSWORD
-- S3 – przechowuje plik wejściowy i wynikowy
-- CloudWatch Logs – przechowuje logi wykonania
+## Main components
+- ECR – stores the container image for the Lambda function
+- Lambda – runs the application logic
+- EventBridge Scheduler – triggers the job on a schedule
+- Parameter Store – stores `ZP_USERNAME` and `ZP_PASSWORD`
+- S3 – stores the input and output files
+- CloudWatch Logs – stores execution logs
 
-## Założenia runtime
-- timeout Lambdy: 840 s
-- soft stop w kodzie: 800 s
-- pamięć tymczasowa (/tmp): 2048 MB
+## Runtime assumptions
+- Lambda timeout: 840 s
+- Soft stop in code: 800 s
+- Temporary storage (`/tmp`): 2048 MB
 
 ## Input / Output
-- input: `team.xlsx` w S3
-- output: `updated_team.xlsx` w S3
+- input: `team.xlsx` in S3
+- output: `updated_team.xlsx` in S3
 
-## Uwagi
-To jest pierwsza robocza wersja architektury pod dalsze prace nad Terraformem.
+## Notes
+This is the first working version of the architecture for further Terraform work.

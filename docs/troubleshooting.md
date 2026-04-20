@@ -1,50 +1,50 @@
-# Najczęstsze problemy
+# Common problems
 
-Ten dokument zbiera najczęstsze problemy związane z uruchamianiem projektu lokalnie i przez Docker.
+This document collects the most common problems related to running the project locally and with Docker.
 
 ---
 
-## 1. Brakuje danych logowania w `.env`
+## 1. Missing login credentials in `.env`
 
-Sprawdź:
+Check:
 
-- czy plik nazywa się dokładnie **`.env`**
-- czy znajduje się w głównym katalogu projektu, obok `main.py`
-- czy zawiera:
+- whether the file is named exactly **`.env`**
+- whether it is located in the project root directory, next to `main.py`
+- whether it contains:
   - `ZP_USERNAME`
   - `ZP_PASSWORD`
 
-Przykład poprawnego pliku:
+Example of a valid file:
 
 ```env
-ZP_USERNAME=twoj_login
-ZP_PASSWORD=twoje_haslo
+ZP_USERNAME=your_login
+ZP_PASSWORD=your_password
 ```
 
 ---
 
-## 2. Windows: problem z utworzeniem `.env`
+## 2. Windows: problem creating `.env`
 
-Windows czasem utrudnia tworzenie plików z kropką na początku nazwy.  
-Utwórz plik przez terminal:
+Windows sometimes makes it harder to create files that start with a dot.  
+Create the file from the terminal:
 
 ```powershell
 New-Item -Name ".env" -ItemType "file"
 ```
 
-Następnie otwórz go i wklej dane logowania.
+Then open it and paste your login credentials.
 
 ---
 
-## 3. Nie znaleziono pliku wejściowego
+## 3. Input file not found
 
-Jeśli pojawia się błąd informujący o braku pliku wejściowego:
+If you get an error saying the input file is missing:
 
-- sprawdź, czy plik istnieje,
-- sprawdź, czy przekazana ścieżka jest poprawna,
-- upewnij się, że uruchamiasz skrypt z właściwego katalogu.
+- check whether the file exists,
+- check whether the path you passed is correct,
+- make sure you are running the script from the correct directory.
 
-Przykład:
+Example:
 
 ```bash
 python main.py -i team.xlsx --headless
@@ -52,30 +52,30 @@ python main.py -i team.xlsx --headless
 
 ---
 
-## 4. Obsługiwany jest tylko plik `.xlsx`
+## 4. Only `.xlsx` files are supported
 
-Projekt obsługuje wyłącznie pliki Excela w formacie:
+The project supports Excel files only in this format:
 
 ```text
 .xlsx
 ```
 
-Jeśli podasz plik `.txt`, `.csv`, `.xls` lub inny, pojawi się błąd walidacji.
+If you pass a `.txt`, `.csv`, `.xls`, or any other file type, the script will raise a validation error.
 
 ---
 
-## 5. Selenium / Chrome nie startuje
+## 5. Selenium / Chrome does not start
 
-Jeśli przeglądarka nie uruchamia się poprawnie:
+If the browser does not start correctly:
 
-- zaktualizuj Google Chrome,
-- zaktualizuj Selenium:
+- update Google Chrome,
+- update Selenium:
 
 ```bash
 pip install -U selenium
 ```
 
-- uruchom projekt bez `--headless`, żeby łatwiej zobaczyć, co się dzieje:
+- run the project without `--headless` so it is easier to see what is happening:
 
 ```bash
 python main.py
@@ -83,75 +83,75 @@ python main.py
 
 ---
 
-## 6. Brak danych mocy z wykresu
+## 6. Missing power data from the chart
 
-ZwiftPower używa wykresów renderowanych w JavaScript (Highcharts).  
-Jeśli strona zmieni strukturę lub selektory przestaną pasować, część danych może nie zostać pobrana.
+ZwiftPower uses charts rendered in JavaScript (Highcharts).  
+If the page structure changes or the selectors no longer match, some data may not be collected.
 
-W takim przypadku:
+In that case:
 
-- sprawdź `errors.log`,
-- sprawdź, czy profil ZwiftPower nadal ma oczekiwaną strukturę,
-- sprawdź, czy nie zmieniły się selektory używane w scraperze.
-
----
-
-## 7. Kontener Docker kończy działanie od razu
-
-To normalne.
-
-Projekt uruchamiany przez Docker działa jako **jednorazowe zadanie**, a nie jako usługa działająca w tle.  
-Po zakończeniu przetwarzania kontener po prostu się zamyka.
+- check `errors.log`,
+- check whether the ZwiftPower profile still has the expected structure,
+- check whether the selectors used in the scraper still match the page.
 
 ---
 
-## 8. Po zmianach w `Dockerfile` lub `requirements.txt` nic się nie zmienia
+## 7. The Docker container stops immediately
 
-Uruchom projekt ponownie z przebudowaniem obrazu:
+This is normal.
+
+When run with Docker, the project works as a **one-time job**, not as a long-running background service.  
+Once the processing is finished, the container simply exits.
+
+---
+
+## 8. Changes in `Dockerfile` or `requirements.txt` do not show up
+
+Run the project again with a rebuilt image:
 
 ```bash
 docker compose run --rm --build zp-updater
 ```
 
-Jeśli nadal widzisz stare zachowanie, możesz dodatkowo usunąć lokalny obraz i zbudować go ponownie.
+If you still see the old behavior, you can also remove the local image and build it again.
 
 ---
 
-## 9. Skrypt działa niestabilnie przy wielu profilach
+## 9. The script is unstable with many profiles
 
-Jeśli pojawiają się losowe błędy lub scraping jest niestabilny:
+If you see random errors or scraping becomes unstable:
 
-- zwiększ timeout:
+- increase the timeout:
 
 ```bash
 python main.py --headless --timeout 30
 ```
 
-- dodaj większe opóźnienie między profilami:
+- add a longer delay between profiles:
 
 ```bash
 python main.py --headless --sleep 1.0
 ```
 
-To może pomóc, jeśli strona ładuje się wolniej lub wymaga więcej czasu na renderowanie danych.
+This can help if the page loads more slowly or needs more time to render the data.
 
 ---
 
-## 10. Testy nie przechodzą
+## 10. Tests do not pass
 
-Sprawdź:
+Check:
 
-- czy masz zainstalowane zależności z `requirements.txt`,
-- czy uruchamiasz testy z głównego katalogu projektu,
-- czy środowisko wirtualne jest aktywne.
+- whether you installed the dependencies from `requirements.txt`,
+- whether you are running the tests from the project root directory,
+- whether your virtual environment is active.
 
-Uruchomienie wszystkich testów:
+Run all tests:
 
 ```bash
 pytest
 ```
 
-Uruchomienie pojedynczego testu:
+Run a single test:
 
 ```bash
 pytest tests/test_config.py
@@ -159,11 +159,10 @@ pytest tests/test_config.py
 
 ---
 
-## 11. Gdzie szukać dalszych informacji?
+## 11. Where to look for more information
 
-Jeśli problem dotyczy:
+If the problem is related to:
 
-- konfiguracji → zobacz `docs/configuration.md`
-- uruchamiania → zobacz `docs/usage.md`
-- architektury AWS → zobacz `docs/architecture/lambda-v1.md`
-``
+- configuration → see `docs/configuration.md`
+- running the project → see `docs/usage.md`
+- AWS architecture → see `docs/architecture/lambda-v1.md`
