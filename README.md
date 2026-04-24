@@ -222,36 +222,46 @@ Only collect and use data that you are authorized to access, for example your ow
 
 ```text
 .
-├─ .github/
-│  └─ workflows/
-│     ├─ ci.yml
-│     └─ publish-dockerhub.yml
-├─ docs/
-│  ├─ configuration.md
-│  ├─ usage.md
-│  ├─ troubleshooting.md
-│  └─ architecture/
-│     ├─ lambda-v1.drawio
-│     ├─ lambda-v1.md
-│     └─ lambda-v1.png
-├─ tests/
-│  ├─ test_cli_help.py
-│  ├─ test_config.py
-│  ├─ test_excel_io.py
-│  └─ test_imports.py
-├─ zp_updater/
-│  ├─ __init__.py
-│  ├─ config.py
-│  ├─ excel_io.py
-│  ├─ logging_utils.py
-│  └─ scraper.py
-├─ .dockerignore
-├─ .env.example
-├─ .gitignore
-├─ Dockerfile
-├─ README.md
-├─ compose.yml
-├─ main.py
-├─ requirements.txt
-└─ team.xlsx
+├── .dockerignore
+├── .env.example
+├── .github
+│   └── workflows
+│       ├── ci.yml
+│       └── publish-dockerhub.yml
+├── .gitignore
+├── Dockerfile
+├── README.md
+├── compose.yml
+├── docs
+│   ├── architecture
+│   │   ├── lambda-v1.drawio
+│   │   ├── lambda-v1.md
+│   │   └── lambda-v1.png
+│   ├── configuration.md
+│   ├── troubleshooting.md
+│   └── usage.md
+├── errors.log
+├── infra
+│   └── terraform
+│       ├── main.tf
+│       ├── outputs.tf
+│       ├── provider.tf
+│       ├── terraform.tfvars.example
+│       ├── variables.tf
+│       └── version.tf
+├── main.py
+├── requirements.txt
+├── team.xlsx
+├── tests
+│   ├── test_cli_help.py
+│   ├── test_config.py
+│   ├── test_excel_io.py
+│   └── test_imports.py
+├── updated_team.xlsx
+└── zp_updater
+    ├── __init__.py
+    ├── config.py
+    ├── excel_io.py
+    ├── logging_utils.py
+    └── scraper.py
 ```
