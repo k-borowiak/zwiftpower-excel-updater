@@ -1,0 +1,29 @@
+aws_region = "eu-central-1"
+
+project_name        = "zwiftpower-updater"
+ecr_repository_name = "zwiftpower-updater"
+
+# Set this after pushing a Lambda-compatible image to ECR
+lambda_image_uri = "123456789012.dkr.ecr.eu-central-1.amazonaws.com/zwiftpower-updater:latest"
+
+s3_bucket_name = "zwiftpower-updater-dev-example"
+
+input_key  = "input/team.xlsx"
+output_key = "output/updated_team.xlsx"
+
+ssm_username_parameter_name = "/zwiftpower-updater/dev/ZP_USERNAME"
+ssm_password_parameter_name = "/zwiftpower-updater/dev/ZP_PASSWORD"
+
+schedule_expression          = "rate(1 day)"
+schedule_expression_timezone = "UTC"
+
+lambda_timeout              = 840
+lambda_memory_size          = 1024
+lambda_ephemeral_storage_mb = 2048
+log_retention_days          = 14
+
+tags = {
+  Project     = "zwiftpower-updater"
+  Environment = "dev"
+  ManagedBy   = "terraform"
+}
